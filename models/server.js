@@ -1,9 +1,10 @@
 
 const express = require('express');
-const cors = require('cors')
+const cors = require('cors');
 
 class Server {
     constructor() {
+        
         this.app = express();
         this.port = process.env.PORT;
         this.usuariosPath = '/api/usuarios'
@@ -17,6 +18,9 @@ class Server {
     middlewars() {
         // cors 
         this.app.use(cors())
+
+        //parseo ylectura del body
+        this.app.use(express.json());
         // directorio publico 
         this.app.use(express.static('public'))
     }
@@ -29,6 +33,5 @@ class Server {
         })
     }
 }
-
 
 module.exports = Server;
