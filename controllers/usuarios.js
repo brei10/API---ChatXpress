@@ -1,24 +1,32 @@
-
 const Usuario = require("../models/usuario")
 const bcryptjs = require("bcrypt");
 
-const usuariosGet = (req, res ) => {
-    /* espress nos parsesa los datos de la url que tiene caracteres */
-    /* podemos darle valores por defecto cuando destructuramos */
-    const query = req.query;
-    res.json({
-        msg: "get api - contralador",
-        query
-    });
+const usuariosGet = async(req, res ) => {
+    const {limite=5, desde=1} = req.query
+          const usuarios = await Usuario.find()
+            .limit(Number(limite))
+            .skip(Number(desde))
+        res.json({
+            usuarios
+        });
 }
 
-const usuariosPut = (req, res) => {
-    /* /:id   */
+const usuariosPut = async(req, res) => {
     const {id} = req.params;
+    const { _id, password, google, correo, ...resto} = req.body;
+
+    // Todo validar contra la base de datos
+    if (password) {
+         //encriptar la contraseña 
+         const salt = bcryptjs.genSaltSync(10);
+         resto.password = bcryptjs.hashSync(password, salt);
+    }       // busca el usuario y se puede actualizar
+         const usuario = await Usuario.findByIdAndUpdate(id,resto);
+
     res.json({
         msg: "put api",
-        id
-    });
+        usuario
+    })
 }
 
 const usuariosPost = async (req, res) => {
@@ -26,16 +34,11 @@ const usuariosPost = async (req, res) => {
     // obtenemos la request
     const {nombre,correo,password,rol} = req.body; /* podempos destructurar para solo obtener las propiedades que queramos { nombre, edad } */
     const usuario = new Usuario({nombre,correo,password,rol});
-    //verificar si  el correo existe
-    const existeEmail = await Usuario.findOne({correo:correo})
-    if (existeEmail){
-        return res.status(400).json({
-            msg: "ese correo ya se encuentra en uso"
-        })
-    }
+    
     //encriptar la contraseña 
     const salt = bcryptjs.genSaltSync(10);
     usuario.password = bcryptjs.hashSync(password, salt);
+
     // guardarDB
     await usuario.save()
 

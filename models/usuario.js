@@ -33,7 +33,13 @@ const UsuarioSchema = Schema({
         type: Boolean,
         default: false,
     }
-})
+});
+
+UsuarioSchema.methods.toJSON = function () {
+    /* sacamos a pass y __v y lo demas lo asignamos a usuario */
+    const {__v, password, ...usuario} = this.toObject();
+    return usuario;
+}
 
 
 module.exports = model('Usuario', UsuarioSchema)
