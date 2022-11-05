@@ -38,6 +38,9 @@ const UsuarioSchema = Schema({
 UsuarioSchema.methods.toJSON = function () {
     /* sacamos a pass y __v y lo demas lo asignamos a usuario */
     const {__v, password, ...usuario} = this.toObject();
+    usuario.uid = usuario._id;
+    delete usuario._id;
+    
     return usuario;
 }
 
