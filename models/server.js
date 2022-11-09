@@ -8,13 +8,13 @@ class Server {
         
         this.app = express();
         this.port = process.env.PORT;
-
         this.usuariosPath = '/api/usuarios';
         this.authPath = '/api/auth';
+        this.categorias = "/api/categorias";
+        this.productos = "/api/productos";
+        this.buscar = "/api/buscar"
         // conectar a base de datos
         this.conectarDb();
-
-
         // middlewars
         this.middlewars();
         // rutas de mi aplicacion
@@ -28,7 +28,6 @@ class Server {
     middlewars() {
         // cors 
         this.app.use(cors())
-
         //parseo ylectura del body
         this.app.use(express.json());
         // directorio publico 
@@ -36,7 +35,12 @@ class Server {
     }
     routes() {
         this.app.use(this.usuariosPath, require('../routes/usuarios'))
+        this.app.use(this.categorias, require('../routes/categorias'))
         this.app.use(this.authPath, require('../routes/auth'))
+        this.app.use(this.productos, require('../routes/productos'))
+        this.app.use(this.buscar, require('../routes/buscar'))
+        
+        
     }
     listen() {
         this.app.listen(this.port, () => {
