@@ -2,13 +2,20 @@
 const express = require('express');
 const cors = require('cors');
 const { dbConection } = require('../database/config');
-const fileUpload = require('express-fileupload')
+const fileUpload = require('express-fileupload');
+const { socketController } = require('../sockets/controller');
 
 class Server {
     constructor() {
         
         this.app = express();
         this.port = process.env.PORT;
+        this.server = require('http').createServer( this.app );
+        this.io = require('socket.io')(this.server);
+
+        
+
+        // routes
         this.usuariosPath = '/api/usuarios';
         this.authPath = '/api/auth';
         this.categorias = "/api/categorias";
@@ -21,6 +28,9 @@ class Server {
         this.middlewars();
         // rutas de mi aplicacion
         this.routes();
+
+        // sockets
+        this.sockets();
     }
 
     async conectarDb(){
@@ -50,8 +60,15 @@ class Server {
         
         
     }
+
+
+    sockets(){
+        this.io.on('connection', ( socket ) => socketController(socket, this.io));
+    }
     listen() {
-        this.app.listen(this.port, () => {
+        // se escucha el servidor de sockets, que 
+        // envuelve a la de express. ( app );
+        this.server.listen(this.port, () => {
             console.log(`Servidor creado en el puerto ${process.env.PORT}; `)
         })
     }

@@ -13,7 +13,7 @@ const validarJWT = async(req,res,next) => {
 
     try {
 
-        const {uid} = jwt.verify(token, process.env.SECRETORPRIVATEKEY)
+        const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY)
         // leer el usuario que corresponde al uid de mongo
         const usuario = await Usuario.findById(uid);
 
@@ -23,11 +23,11 @@ const validarJWT = async(req,res,next) => {
             })
         }
 
-        if(!usuario.estado){
+        /* if(!usuario.estado){
             return res.json({
                 msg: "estado false, no se puede eliminar"
             })
-        }
+        } */
        
         req.usuario = usuario;
         next();

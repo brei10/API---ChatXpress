@@ -33,7 +33,7 @@ const UsuarioSchema = Schema({
     google: {
         type: Boolean,
         default: false,
-    }
+    },
 });
 
 UsuarioSchema.methods.toJSON = function () {

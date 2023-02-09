@@ -1,5 +1,6 @@
 
 const mongoose = require("mongoose")
+const Usuario = require("../models/usuario")
 
 const dbConection = async () => {
 
@@ -12,6 +13,8 @@ const dbConection = async () => {
         console.log(error)
         throw new Error("error en la hora de inicializar en la base de datos")
     }
+    const act = await Usuario.updateMany({},{$unset:{"nuevo3":true,"nuevo2":true,"nuevo":true}})
+    console.log(act)
 }
 
 
